@@ -33,6 +33,10 @@ MonoBehaviour:
     m_Address: Assets/Scenes
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 4a55ea48e22154c27aea90460535acc4
+    m_Address: Assets/JsonData.json
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1d2b4ed0d28344ad182cccec2728cdca, type: 2}
   m_SchemaSet:

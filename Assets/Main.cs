@@ -1,38 +1,83 @@
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 internal class Main : MonoBehaviour
 {
-    // Assign in Editor or in code
-    public string address;
+    [SerializeField]
+    private TextMeshProUGUI m_Text;
+    [SerializeField]
+    private string m_PrefabAddress;
+    [SerializeField]
+    private string m_MaterialAddress;
+    [SerializeField]
+    private string m_JsonAddress;
 
-    // Retain handle to release asset and operation
-    private AsyncOperationHandle<GameObject> handle;
+    private AsyncOperationHandle<Material> materialHandle;
+    private AsyncOperationHandle<GameObject> prefabHandle;
+    private AsyncOperationHandle<TextAsset> jsonHandle;
+    private GameObject m_Prefab;
 
-    // Start the load operation on start
     void Start()
     {
-        handle = Addressables.LoadAssetAsync<GameObject>(address);
-        handle.Completed += Handle_Completed;
+        prefabHandle = Addressables.LoadAssetAsync<GameObject>(m_PrefabAddress);
+        prefabHandle.Completed += PrefabHandle_Completed;
+        
+        
+        jsonHandle = Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress);
+        jsonHandle.Completed += JsonHandle_Completed;
     }
 
-    // Instantiate the loaded prefab on complete
-    private void Handle_Completed(AsyncOperationHandle<GameObject> operation)
+    private void PrefabHandle_Completed(AsyncOperationHandle<GameObject> operation)
     {
         if (operation.Status == AsyncOperationStatus.Succeeded)
         {
-            Instantiate(operation.Result, transform);
+            m_Prefab = Instantiate(operation.Result, transform);
+            materialHandle = Addressables.LoadAssetAsync<Material>(m_MaterialAddress);
+            materialHandle.Completed += MaterialHandle_Completed;
         }
         else
         {
-            Debug.LogError($"Asset for {address} failed to load.");
+            Debug.LogError($"Asset for {m_PrefabAddress} failed to load.");
         }
     }
 
-    // Release asset when parent object is destroyed
+    private void MaterialHandle_Completed(AsyncOperationHandle<Material> operation)
+    {
+        if (operation.Status == AsyncOperationStatus.Succeeded)
+        {
+            m_Prefab.GetComponent<MeshRenderer>().material = operation.Result;
+        }
+        else
+        {
+            Debug.LogError($"Asset for {m_MaterialAddress} failed to load.");
+        }
+    }
+
+    private void JsonHandle_Completed(AsyncOperationHandle<TextAsset> operation)
+    {
+        if (operation.Status == AsyncOperationStatus.Succeeded)
+        {
+            m_Text.text += JsonUtility.FromJson<JsonSerializedObject>(operation.Result.text).json_text;
+        }
+        else
+        {
+            Debug.LogError($"Asset for {m_JsonAddress} failed to load.");
+        }
+    }
+
     private void OnDestroy()
     {
-        Addressables.Release(handle);
+        Addressables.Release(materialHandle);
+        Addressables.Release(prefabHandle);
+        Addressables.Release(jsonHandle);
     }
+}
+
+[System.Serializable]
+public class JsonSerializedObject
+{
+    public string json_text;
 }
