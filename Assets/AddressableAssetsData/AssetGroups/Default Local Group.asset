@@ -45,6 +45,10 @@ MonoBehaviour:
     m_Address: AddressableVideo
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 3704bf807290b4168bba545acc17e24d
+    m_Address: Screenshot_20221004-114817
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1d2b4ed0d28344ad182cccec2728cdca, type: 2}
   m_SchemaSet:
