@@ -1,11 +1,13 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-internal class Main : MonoBehaviour
+[RequireComponent(typeof(AudioSource))]
+class Main : MonoBehaviour
 {
+    [SerializeField]
+    private AudioClip impact;
     [SerializeField]
     private TextMeshProUGUI m_Text;
     [SerializeField]
@@ -19,6 +21,7 @@ internal class Main : MonoBehaviour
     private AsyncOperationHandle<GameObject> prefabHandle;
     private AsyncOperationHandle<TextAsset> jsonHandle;
     private GameObject m_Prefab;
+    private AudioSource m_AudioSource;
 
     void Start()
     {
@@ -28,6 +31,13 @@ internal class Main : MonoBehaviour
         
         jsonHandle = Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress);
         jsonHandle.Completed += JsonHandle_Completed;
+
+        m_AudioSource = GetComponent<AudioSource>();
+    }
+
+    public void PlaySound()
+    {
+        m_AudioSource.Play();
     }
 
     private void PrefabHandle_Completed(AsyncOperationHandle<GameObject> operation)
