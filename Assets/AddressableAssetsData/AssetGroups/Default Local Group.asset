@@ -37,6 +37,10 @@ MonoBehaviour:
     m_Address: JsonData
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 7661ce42f41c345a7a9510301b1315e9
+    m_Address: morphed-metal-discharged-cinematic-trailer-sound-effect
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1d2b4ed0d28344ad182cccec2728cdca, type: 2}
   m_SchemaSet:

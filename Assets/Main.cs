@@ -6,8 +6,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 [RequireComponent(typeof(AudioSource))]
 class Main : MonoBehaviour
 {
-    [SerializeField]
-    private AudioClip impact;
+    
     [SerializeField]
     private TextMeshProUGUI m_Text;
     [SerializeField]
@@ -16,19 +15,24 @@ class Main : MonoBehaviour
     private string m_MaterialAddress;
     [SerializeField]
     private string m_JsonAddress;
+    [SerializeField]
+    private string m_AudioAddress;
 
     private AsyncOperationHandle<Material> materialHandle;
     private AsyncOperationHandle<GameObject> prefabHandle;
     private AsyncOperationHandle<TextAsset> jsonHandle;
+    private AsyncOperationHandle<AudioClip> audioHandle;
     private GameObject m_Prefab;
     private AudioSource m_AudioSource;
+    private AudioClip m_AddressableAudio;
 
     void Start()
     {
         prefabHandle = Addressables.LoadAssetAsync<GameObject>(m_PrefabAddress);
         prefabHandle.Completed += PrefabHandle_Completed;
-        
-        
+        audioHandle = Addressables.LoadAssetAsync<AudioClip>(m_AudioAddress);
+        audioHandle.Completed += AudioHandle_Completed;
+
         jsonHandle = Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress);
         jsonHandle.Completed += JsonHandle_Completed;
 
@@ -37,7 +41,7 @@ class Main : MonoBehaviour
 
     public void PlaySound()
     {
-        m_AudioSource.Play();
+        m_AudioSource.PlayOneShot(m_AddressableAudio, 1f);
     }
 
     private void PrefabHandle_Completed(AsyncOperationHandle<GameObject> operation)
@@ -51,6 +55,18 @@ class Main : MonoBehaviour
         else
         {
             Debug.LogError($"Asset for {m_PrefabAddress} failed to load.");
+        }
+    }
+
+    private void AudioHandle_Completed(AsyncOperationHandle<AudioClip> operation)
+    {
+        if (operation.Status == AsyncOperationStatus.Succeeded)
+        {
+            m_AddressableAudio = operation.Result;
+        }
+        else
+        {
+            Debug.LogError($"Asset for {m_AudioAddress} failed to load.");
         }
     }
 
