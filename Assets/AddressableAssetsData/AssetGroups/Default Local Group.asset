@@ -41,6 +41,10 @@ MonoBehaviour:
     m_Address: morphed-metal-discharged-cinematic-trailer-sound-effect
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 0f219f40cc58e4ce9aff13915fe7b65b
+    m_Address: AddressableVideo
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1d2b4ed0d28344ad182cccec2728cdca, type: 2}
   m_SchemaSet:

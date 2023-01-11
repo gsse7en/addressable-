@@ -653,11 +653,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Text: {fileID: 1810778137}
+  m_VideoPlayer: {fileID: 1734930273}
   m_PrefabAddress: AddressablePrefab
   m_MaterialAddress: AddressableMaterial
   m_JsonAddress: JsonData
   m_AudioAddress: morphed-metal-discharged-cinematic-trailer-sound-effect
-  m_VideoPlayer: {fileID: 1734930273}
+  m_VideoAddress: AddressableVideo
 --- !u!82 &1256065818
 AudioSource:
   m_ObjectHideFlags: 0
@@ -933,7 +934,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1734930271}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 0f219f40cc58e4ce9aff13915fe7b65b, type: 3}
+  m_VideoClip: {fileID: 0}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 963194227}

@@ -11,6 +11,8 @@ class Main : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI m_Text;
     [SerializeField]
+    private VideoPlayer m_VideoPlayer;
+    [SerializeField]
     private string m_PrefabAddress;
     [SerializeField]
     private string m_MaterialAddress;
@@ -19,15 +21,18 @@ class Main : MonoBehaviour
     [SerializeField]
     private string m_AudioAddress;
     [SerializeField]
-    private VideoPlayer m_VideoPlayer;
+    private string m_VideoAddress;
+
 
     private AsyncOperationHandle<Material> materialHandle;
     private AsyncOperationHandle<GameObject> prefabHandle;
     private AsyncOperationHandle<TextAsset> jsonHandle;
     private AsyncOperationHandle<AudioClip> audioHandle;
+    private AsyncOperationHandle<VideoClip> videoHandle;
     private GameObject m_Prefab;
     private AudioSource m_AudioSource;
     private AudioClip m_AddressableAudio;
+    private VideoClip m_AddressableVideo;
 
     void Start()
     {
@@ -35,52 +40,13 @@ class Main : MonoBehaviour
         prefabHandle.Completed += PrefabHandle_Completed;
         audioHandle = Addressables.LoadAssetAsync<AudioClip>(m_AudioAddress);
         audioHandle.Completed += AudioHandle_Completed;
-
+        videoHandle = Addressables.LoadAssetAsync<VideoClip>(m_VideoAddress);
+        videoHandle.Completed += VideoHandle_Completed;
         jsonHandle = Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress);
         jsonHandle.Completed += JsonHandle_Completed;
 
         m_AudioSource = GetComponent<AudioSource>();
     }
-
-    //void Start()
-    //{
-    //    // Will attach a VideoPlayer to the main camera.
-    //    GameObject camera = GameObject.Find("Main Camera");
-
-    //    // VideoPlayer automatically targets the camera backplane when it is added
-    //    // to a camera object, no need to change videoPlayer.targetCamera.
-    //    var videoPlayer = camera.AddComponent<UnityEngine.Video.VideoPlayer>();
-
-    //    // Play on awake defaults to true. Set it to false to avoid the url set
-    //    // below to auto-start playback since we're in Start().
-    //    videoPlayer.playOnAwake = false;
-
-    //    // By default, VideoPlayers added to a camera will use the far plane.
-    //    // Let's target the near plane instead.
-    //    videoPlayer.renderMode = UnityEngine.Video.VideoRenderMode.CameraNearPlane;
-
-    //    // This will cause our Scene to be visible through the video being played.
-    //    videoPlayer.targetCameraAlpha = 0.5F;
-
-    //    // Set the video to play. URL supports local absolute or relative paths.
-    //    // Here, using absolute.
-    //    videoPlayer.url = "/Users/graham/movie.mov";
-
-    //    // Skip the first 100 frames.
-    //    videoPlayer.frame = 100;
-
-    //    // Restart from beginning when done.
-    //    videoPlayer.isLooping = true;
-
-    //    // Each time we reach the end, we slow down the playback by a factor of 10.
-    //    videoPlayer.loopPointReached += EndReached;
-
-    //    // Start playback. This means the VideoPlayer may have to prepare (reserve
-    //    // resources, pre-load a few frames, etc.). To better control the delays
-    //    // associated with this preparation one can use videoPlayer.Prepare() along with
-    //    // its prepareCompleted event.
-    //    videoPlayer.Play();
-    //}
 
     public void PlaySound()
     {
@@ -103,6 +69,18 @@ class Main : MonoBehaviour
         else
         {
             Debug.LogError($"Asset for {m_PrefabAddress} failed to load.");
+        }
+    }
+
+    private void VideoHandle_Completed(AsyncOperationHandle<VideoClip> operation)
+    {
+        if (operation.Status == AsyncOperationStatus.Succeeded)
+        {
+            m_VideoPlayer.clip = operation.Result;
+        }
+        else
+        {
+            Debug.LogError($"Asset for {m_AudioAddress} failed to load.");
         }
     }
 
