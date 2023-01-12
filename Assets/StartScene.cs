@@ -1,6 +1,4 @@
 using System.Collections;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -8,7 +6,7 @@ using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.UI;
 
 
-public class StartScene : MonoBehaviour, ISingleton
+public class StartScene : MonoBehaviour
 {
     public static StartScene Instance { get; private set; }
     public string AddressableSceneAddress;

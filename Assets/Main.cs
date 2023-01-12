@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -16,7 +15,7 @@ class Main : MonoBehaviour
 {
     
     [SerializeField]
-    private TextMeshProUGUI m_Text;
+    private Text m_Text;
     [SerializeField]
     private Image m_Image;
     [SerializeField]
