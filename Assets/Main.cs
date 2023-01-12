@@ -24,6 +24,8 @@ class Main : MonoBehaviour
     [SerializeField]
     private string m_PrefabAddress;
     [SerializeField]
+    private string m_Prefab2Address;
+    [SerializeField]
     private string m_MaterialAddress;
     [SerializeField]
     private string m_JsonAddress;
@@ -37,6 +39,7 @@ class Main : MonoBehaviour
 
     private AsyncOperationHandle<Material> materialHandle;
     private AsyncOperationHandle<GameObject> prefabHandle;
+    private AsyncOperationHandle<GameObject> prefab2Handle;
     private AsyncOperationHandle<TextAsset> jsonHandle;
     private AsyncOperationHandle<AudioClip> audioHandle;
     private AsyncOperationHandle<VideoClip> videoHandle;
@@ -50,6 +53,8 @@ class Main : MonoBehaviour
     {
         prefabHandle = Addressables.LoadAssetAsync<GameObject>(m_PrefabAddress);
         prefabHandle.Completed += PrefabHandle_Completed;
+        prefab2Handle = Addressables.LoadAssetAsync<GameObject>(m_Prefab2Address);
+        prefab2Handle.Completed += Prefab2Handle_Completed;
         audioHandle = Addressables.LoadAssetAsync<AudioClip>(m_AudioAddress);
         audioHandle.Completed += AudioHandle_Completed;
         videoHandle = Addressables.LoadAssetAsync<VideoClip>(m_VideoAddress);
@@ -78,6 +83,20 @@ class Main : MonoBehaviour
     }
 
     private void PrefabHandle_Completed(AsyncOperationHandle<GameObject> operation)
+    {
+        if (operation.Status == AsyncOperationStatus.Succeeded)
+        {
+            m_Prefab = Instantiate(operation.Result, transform);
+            materialHandle = Addressables.LoadAssetAsync<Material>(m_MaterialAddress);
+            materialHandle.Completed += MaterialHandle_Completed;
+        }
+        else
+        {
+            Debug.LogError($"Asset for {m_PrefabAddress} failed to load.");
+        }
+    }
+
+    private void Prefab2Handle_Completed(AsyncOperationHandle<GameObject> operation)
     {
         if (operation.Status == AsyncOperationStatus.Succeeded)
         {

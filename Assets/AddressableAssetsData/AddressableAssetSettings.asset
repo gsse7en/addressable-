@@ -43,6 +43,7 @@ MonoBehaviour:
   m_GroupAssets:
   - {fileID: 11400000, guid: edbb3efd14f9f4ae4842edae11387a58, type: 2}
   - {fileID: 11400000, guid: bb0304e624690467d9f33f8377d0dc35, type: 2}
+  - {fileID: 11400000, guid: f3a9adb40d2e7415dbacf58f444e9ea1, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -53,6 +54,20 @@ MonoBehaviour:
     - m_InheritedParent: 
       m_Id: 93c163418912f4702a7204dd8e5d0926
       m_ProfileName: Default
+      m_Values:
+      - m_Id: 6c12ebf98988545a38129c5e21d155ed
+        m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
+      - m_Id: 202dfd784989b4860bf29775595934cf
+        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
+      - m_Id: 56d38da1112c14539acb3215e3aa0e6e
+        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
+      - m_Id: d0baf377a98144e7c8346e2d0080137d
+        m_Value: ServerData/[BuildTarget]
+      - m_Id: bc1283295f0d0459ea651a417c4ec433
+        m_Value: http://[PrivateIpAddress]:[HostingServicePort]
+    - m_InheritedParent: 
+      m_Id: 5d8e9c6cd50c045728c5ede53cea9d1d
+      m_ProfileName: Remote
       m_Values:
       - m_Id: 6c12ebf98988545a38129c5e21d155ed
         m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
