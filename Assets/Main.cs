@@ -3,6 +3,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 using UnityEngine.Video;
+using System.Threading.Tasks;
 
 [System.Serializable]
 public class JsonSerializedObject
@@ -13,59 +14,51 @@ public class JsonSerializedObject
 [RequireComponent(typeof(AudioSource))]
 class Main : MonoBehaviour
 {
-    
-    [SerializeField]
-    private Text m_Text;
-    [SerializeField]
-    private Image m_Image;
-    [SerializeField]
-    private VideoPlayer m_VideoPlayer;
-    [SerializeField]
-    private string m_PrefabAddress;
-    [SerializeField]
-    private string m_Prefab2Address;
-    [SerializeField]
-    private string m_MaterialAddress;
-    [SerializeField]
-    private string m_JsonAddress;
-    [SerializeField]
-    private string m_AudioAddress;
-    [SerializeField]
-    private string m_VideoAddress;
-    [SerializeField]
-    private string m_SpriteAddress;
+    [SerializeField] private Text m_Text;
+    [SerializeField] private Image m_Image;
+    [SerializeField] private VideoPlayer m_VideoPlayer;
+    [SerializeField] private string m_PrefabAddress;
+    [SerializeField] private string m_Prefab2Address;
+    [SerializeField] private string m_MaterialAddress;
+    [SerializeField] private string m_JsonAddress;
+    [SerializeField] private string m_AudioAddress;
+    [SerializeField] private string m_VideoAddress;
+    [SerializeField] private string m_SpriteAddress;
 
-
-    private AsyncOperationHandle<Material> materialHandle;
-    private AsyncOperationHandle<GameObject> prefabHandle;
-    private AsyncOperationHandle<GameObject> prefab2Handle;
-    private AsyncOperationHandle<TextAsset> jsonHandle;
-    private AsyncOperationHandle<AudioClip> audioHandle;
-    private AsyncOperationHandle<VideoClip> videoHandle;
-    private AsyncOperationHandle<Sprite> spriteHandle;
     private GameObject m_Prefab;
     private AudioSource m_AudioSource;
     private AudioClip m_AddressableAudio;
     private Sprite m_AddressableSprite;
 
+    #region Lifecycle
     void Start()
     {
-        prefabHandle = Addressables.LoadAssetAsync<GameObject>(m_PrefabAddress);
-        prefabHandle.Completed += PrefabHandle_Completed;
-        prefab2Handle = Addressables.LoadAssetAsync<GameObject>(m_Prefab2Address);
-        prefab2Handle.Completed += Prefab2Handle_Completed;
-        audioHandle = Addressables.LoadAssetAsync<AudioClip>(m_AudioAddress);
-        audioHandle.Completed += AudioHandle_Completed;
-        videoHandle = Addressables.LoadAssetAsync<VideoClip>(m_VideoAddress);
-        videoHandle.Completed += VideoHandle_Completed;
-        spriteHandle = Addressables.LoadAssetAsync<Sprite>(m_SpriteAddress);
-        spriteHandle.Completed += SpriteHandle_Completed;
-        jsonHandle = Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress);
-        jsonHandle.Completed += JsonHandle_Completed;
-
         m_AudioSource = GetComponent<AudioSource>();
+        Caller();
+    }
+    #endregion
+
+    #region Async
+    async void Caller()
+    {
+        await LoadAssetAsync();
     }
 
+    async Task LoadAssetAsync()
+    {
+        TextAsset json_string = await Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress).Task;
+        GameObject prefab = await Addressables.LoadAssetAsync<GameObject>(m_PrefabAddress).Task;
+        Material material = await Addressables.LoadAssetAsync<Material>(m_MaterialAddress).Task;
+        m_Prefab = Instantiate(prefab, transform);
+        m_Prefab.GetComponent<MeshRenderer>().material = material;
+        m_AddressableAudio = await Addressables.LoadAssetAsync<AudioClip>(m_AudioAddress).Task;
+        m_VideoPlayer.clip = await Addressables.LoadAssetAsync<VideoClip>(m_VideoAddress).Task;
+        m_AddressableSprite = await Addressables.LoadAssetAsync<Sprite>(m_SpriteAddress).Task;
+        m_Text.text += JsonUtility.FromJson<JsonSerializedObject>(json_string.ToString()).json_text;
+    }
+    #endregion
+
+    #region Delegates
     public void PlaySound()
     {
         m_AudioSource.PlayOneShot(m_AddressableAudio, 1f);
@@ -80,126 +73,5 @@ class Main : MonoBehaviour
     {
         m_Image.sprite = m_AddressableSprite;
     }
-
-    private void PrefabHandle_Completed(AsyncOperationHandle<GameObject> operation)
-    {
-        if (operation.Status == AsyncOperationStatus.Succeeded)
-        {
-            m_Prefab = Instantiate(operation.Result, transform);
-            materialHandle = Addressables.LoadAssetAsync<Material>(m_MaterialAddress);
-            materialHandle.Completed += MaterialHandle_Completed;
-        }
-        else
-        {
-            Debug.LogError($"Asset for {m_PrefabAddress} failed to load.");
-        }
-    }
-
-    private void Prefab2Handle_Completed(AsyncOperationHandle<GameObject> operation)
-    {
-        if (operation.Status == AsyncOperationStatus.Succeeded)
-        {
-            m_Prefab = Instantiate(operation.Result, transform);
-            materialHandle = Addressables.LoadAssetAsync<Material>(m_MaterialAddress);
-            materialHandle.Completed += MaterialHandle_Completed;
-        }
-        else
-        {
-            Debug.LogError($"Asset for {m_PrefabAddress} failed to load.");
-        }
-    }
-
-    private void SpriteHandle_Completed(AsyncOperationHandle<Sprite> operation)
-    {
-        if (operation.Status == AsyncOperationStatus.Succeeded)
-        {
-            m_AddressableSprite = operation.Result;
-        }
-        else
-        {
-            Debug.LogError($"Asset for {m_AudioAddress} failed to load.");
-        }
-    }
-
-    private void VideoHandle_Completed(AsyncOperationHandle<VideoClip> operation)
-    {
-        if (operation.Status == AsyncOperationStatus.Succeeded)
-        {
-            m_VideoPlayer.clip = operation.Result;
-        }
-        else
-        {
-            Debug.LogError($"Asset for {m_AudioAddress} failed to load.");
-        }
-    }
-
-    private void AudioHandle_Completed(AsyncOperationHandle<AudioClip> operation)
-    {
-        if (operation.Status == AsyncOperationStatus.Succeeded)
-        {
-            m_AddressableAudio = operation.Result;
-        }
-        else
-        {
-            Debug.LogError($"Asset for {m_AudioAddress} failed to load.");
-        }
-    }
-
-    private void MaterialHandle_Completed(AsyncOperationHandle<Material> operation)
-    {
-        if (operation.Status == AsyncOperationStatus.Succeeded)
-        {
-            m_Prefab.GetComponent<MeshRenderer>().material = operation.Result;
-        }
-        else
-        {
-            Debug.LogError($"Asset for {m_MaterialAddress} failed to load.");
-        }
-    }
-
-    private void JsonHandle_Completed(AsyncOperationHandle<TextAsset> operation)
-    {
-        if (operation.Status == AsyncOperationStatus.Succeeded)
-        {
-            m_Text.text += JsonUtility.FromJson<JsonSerializedObject>(operation.Result.text).json_text;
-        }
-        else
-        {
-            Debug.LogError($"Asset for {m_JsonAddress} failed to load.");
-        }
-    }
-
-    private void OnDestroy()
-    {
-        prefabHandle.Completed -= PrefabHandle_Completed;
-        materialHandle.Completed -= MaterialHandle_Completed;
-        jsonHandle.Completed -= JsonHandle_Completed;
-        audioHandle.Completed -= AudioHandle_Completed;
-        videoHandle.Completed -= VideoHandle_Completed;
-        spriteHandle.Completed -= SpriteHandle_Completed;
-        if (materialHandle.IsValid())
-        {
-            Addressables.Release(materialHandle);
-        }
-        if (prefabHandle.IsValid())
-        {
-            Addressables.Release(prefabHandle);
-        }
-        if (jsonHandle.IsValid())
-        {
-            Addressables.Release(jsonHandle);
-        }
-        if (audioHandle.IsValid())
-        {
-            Addressables.Release(audioHandle);
-        }
-        if (videoHandle.IsValid())
-        {
-            Addressables.Release(videoHandle);
-        }
-        if (spriteHandle.IsValid())
-        {
-            Addressables.Release(spriteHandle);
-        }
-    }
+    #endregion
 }
