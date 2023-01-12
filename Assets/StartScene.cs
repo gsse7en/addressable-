@@ -35,7 +35,7 @@ public class StartScene : MonoBehaviour, ISingleton
         {
             Instance.m_StartSceneButton.onClick.AddListener(delegate
             {
-                Addressables.LoadSceneAsync(AddressableSceneAddress).Completed += SceneLoadComplete;
+                Addressables.LoadSceneAsync(AddressableSceneAddress, UnityEngine.SceneManagement.LoadSceneMode.Additive).Completed += SceneLoadComplete;
             });
         }
     }
@@ -44,6 +44,7 @@ public class StartScene : MonoBehaviour, ISingleton
     {
         if (Input.GetKeyDown(KeyCode.X))
         {
+            Instance.m_StartSceneButton.gameObject.SetActive(true);
             Instance.UnloadScene();
         }
     }
@@ -68,6 +69,7 @@ public class StartScene : MonoBehaviour, ISingleton
         {
             Debug.Log("Loaded Scene: " + obj.Result.Scene.name);
             Instance.sceneHandle = obj;
+            Instance.m_StartSceneButton.gameObject.SetActive(false);
         }
     }
     #endregion
