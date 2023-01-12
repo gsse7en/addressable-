@@ -153,11 +153,35 @@ class Main : MonoBehaviour
 
     private void OnDestroy()
     {
-        Addressables.Release(materialHandle);
-        Addressables.Release(prefabHandle);
-        Addressables.Release(jsonHandle);
-        Addressables.Release(audioHandle);
-        Addressables.Release(videoHandle);
-        Addressables.Release(spriteHandle);
+        prefabHandle.Completed += PrefabHandle_Completed;
+        materialHandle.Completed += MaterialHandle_Completed;
+        jsonHandle.Completed += JsonHandle_Completed;
+        audioHandle.Completed += AudioHandle_Completed;
+        videoHandle.Completed += VideoHandle_Completed;
+        spriteHandle.Completed += SpriteHandle_Completed;
+        if (materialHandle.IsValid())
+        {
+            Addressables.Release(materialHandle);
+        }
+        if (prefabHandle.IsValid())
+        {
+            Addressables.Release(prefabHandle);
+        }
+        if (jsonHandle.IsValid())
+        {
+            Addressables.Release(jsonHandle);
+        }
+        if (audioHandle.IsValid())
+        {
+            Addressables.Release(audioHandle);
+        }
+        if (videoHandle.IsValid())
+        {
+            Addressables.Release(videoHandle);
+        }
+        if (spriteHandle.IsValid())
+        {
+            Addressables.Release(spriteHandle);
+        }
     }
 }
