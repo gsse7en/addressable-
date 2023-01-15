@@ -1,10 +1,8 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.UI;
-using UnityEngine.Video;
 
 public class StartScene : MonoBehaviour
 {

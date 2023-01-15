@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Addressables
+  m_EditorClassIdentifier: 
+  m_GroupName: Addressables
+  m_Data:
+    m_SerializedData: []
+  m_GUID: a75c111e4936643d9987fe68ef9587e8
+  m_SerializeEntries:
+  - m_GUID: 348724d384df64e8e9481bad3662880d
+    m_Address: AddressableScene
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c5642cc3a61c433bbe4ed94cc94f30d
+    m_Address: Prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 615b090dda6b64451a71d9f021510f43
+    m_Address: Prefab2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dad5111bce45843e3a8a9b4f25b57c9a
+    m_Address: Audio
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb944228591d646b8b7762e8afbfaa34
+    m_Address: JsonData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2ac9eca301154f53ad6dbbf39438e15
+    m_Address: Material
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c36f6d4d83944b51b4c38cac9a4d0eb
+    m_Address: Sprite
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af9d729ff98124e6f8fbd81bff643d48
+    m_Address: Video
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: ff2645da34ca34850b2d4620f06d895e, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: d7c8a327033a44b05887d8708af42c95, type: 2}
+    - {fileID: 11400000, guid: 4d178161a5b07474b82c52c1dc95c3f2, type: 2}
