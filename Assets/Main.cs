@@ -70,6 +70,7 @@ namespace Addressales.Main
             m_AudioButton?.onClick.RemoveAllListeners();
             m_VideoButton?.onClick.RemoveAllListeners();
             m_SpriteButton?.onClick.RemoveAllListeners();
+            m_SpawnRandomPrefab?.onClick.RemoveAllListeners();
         }
         #endregion
 
@@ -111,8 +112,11 @@ namespace Addressales.Main
         private void SpawnPrefab()
         {
             if (m_Prefabs.Count == 0) return;
+
             int randIndex = Random.Range(0, m_Prefabs.Count);
-            Instantiate(m_Prefabs[randIndex], transform);
+            var prefab = Instantiate(m_Prefabs[randIndex]);
+            Vector3 spawnPoint = new Vector3(Random.Range(-3, 3), Random.Range(-1, 3), 10);
+            prefab.transform.position = spawnPoint;
         }
         #endregion
     }
