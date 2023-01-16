@@ -21,6 +21,7 @@ namespace Addressales.Main
         [SerializeField] private Button m_AudioButton;
         [SerializeField] private Button m_VideoButton;
         [SerializeField] private Button m_SpriteButton;
+        [SerializeField] private Button m_SpawnRandomPrefab;
         [SerializeField] private string m_PrefabsLabel;
         [SerializeField] private string m_MaterialAddress;
         [SerializeField] private string m_JsonAddress;
@@ -28,7 +29,7 @@ namespace Addressales.Main
         [SerializeField] private string m_VideoAddress;
         [SerializeField] private string m_SpriteAddress;
 
-        private List<GameObject> m_Prefabs = new List<GameObject>();
+        private IList<GameObject> m_Prefabs = new List<GameObject>();
         private AudioSource m_AudioSource;
         private AudioClip m_AddressableAudio;
         private Sprite m_AddressableSprite;
@@ -49,6 +50,11 @@ namespace Addressales.Main
             m_SpriteButton?.onClick.AddListener(delegate
             {
                 ShowPicture();
+            });
+
+            m_SpawnRandomPrefab?.onClick.AddListener(delegate
+            {
+                SpawnPrefab();
             });
         }
 
@@ -78,36 +84,35 @@ namespace Addressales.Main
             m_AddressableAudio = await Addressables.LoadAssetAsync<AudioClip>(m_AudioAddress).Task;
             m_VideoPlayer.clip = await Addressables.LoadAssetAsync<VideoClip>(m_VideoAddress).Task;
             m_AddressableSprite = await Addressables.LoadAssetAsync<Sprite>(m_SpriteAddress).Task;
-
             TextAsset json_string = await Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress).Task;
-            IList<GameObject> m_Prefabs = await Addressables.LoadAssetsAsync<GameObject>(m_PrefabsLabel, null).Task;
-            foreach (var obj in m_Prefabs)
-            {
-                Instantiate(obj, transform);
-            }
-            //Material material = await Addressables.LoadAssetAsync<Material>(m_MaterialAddress).Task;
-            //m_Prefab = Instantiate(prefab, transform);
-            //m_Prefab.GetComponent<MeshRenderer>().material = material;
             m_Text.text += JsonUtility.FromJson<JsonSerializedObject>(json_string.ToString()).json_text;
+            m_Prefabs = await Addressables.LoadAssetsAsync<GameObject>(m_PrefabsLabel, null).Task;
         }
 
 
         #endregion
 
         #region Delegates
-        public void PlaySound()
+        private void PlaySound()
         {
             m_AudioSource.PlayOneShot(m_AddressableAudio, 1f);
         }
 
-        public void PlayVideo()
+        private void PlayVideo()
         {
             m_VideoPlayer.Play();
         }
 
-        public void ShowPicture()
+        private void ShowPicture()
         {
             m_Image.sprite = m_AddressableSprite;
+        }
+
+        private void SpawnPrefab()
+        {
+            if (m_Prefabs.Count == 0) return;
+            int randIndex = Random.Range(0, m_Prefabs.Count);
+            Instantiate(m_Prefabs[randIndex], transform);
         }
         #endregion
     }
