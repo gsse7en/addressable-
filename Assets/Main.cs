@@ -7,6 +7,17 @@ using System.Collections.Generic;
 
 namespace Addressales.Main
 {
+    public class PrefabsFactory : MonoBehaviour
+    {
+        public GameObject GetNewInstance(GameObject prefab)
+        {
+            GameObject gameOjectInstance = Instantiate(prefab);
+            Vector3 position = new Vector3(Random.Range(-3, 3), Random.Range(-1, 3), 10);
+            gameOjectInstance.transform.position = position;
+            return gameOjectInstance;
+        }
+    }
+
     [System.Serializable]
     public class JsonSerializedObject
     {
@@ -28,7 +39,8 @@ namespace Addressales.Main
         [SerializeField] private string m_AudioAddress;
         [SerializeField] private string m_VideoAddress;
         [SerializeField] private string m_SpriteAddress;
-
+        [SerializeField] private int m_SawnedObjectLifespan = 2000;
+        private PrefabsFactory m_SpawnFactory = new PrefabsFactory();
         private IList<GameObject> m_Prefabs = new List<GameObject>();
         private AudioSource m_AudioSource;
         private AudioClip m_AddressableAudio;
@@ -37,25 +49,10 @@ namespace Addressales.Main
         #region Lifecycle
         private void Awake()
         {
-            m_AudioButton?.onClick.AddListener(delegate
-            {
-                PlaySound();
-            });
-
-            m_VideoButton?.onClick.AddListener(delegate
-            {
-                PlayVideo();
-            });
-
-            m_SpriteButton?.onClick.AddListener(delegate
-            {
-                ShowPicture();
-            });
-
-            m_SpawnRandomPrefab?.onClick.AddListener(delegate
-            {
-                SpawnPrefab();
-            });
+            m_AudioButton?.onClick.AddListener(delegate { PlaySound(); });
+            m_VideoButton?.onClick.AddListener(delegate { PlayVideo(); });
+            m_SpriteButton?.onClick.AddListener(delegate { ShowPicture(); });
+            m_SpawnRandomPrefab?.onClick.AddListener(delegate { SpawnPrefab(); });
         }
 
         void Start()
@@ -89,8 +86,6 @@ namespace Addressales.Main
             m_Text.text += JsonUtility.FromJson<JsonSerializedObject>(json_string.ToString()).json_text;
             m_Prefabs = await Addressables.LoadAssetsAsync<GameObject>(m_PrefabsLabel, null).Task;
         }
-
-
         #endregion
 
         #region Delegates
@@ -109,14 +104,15 @@ namespace Addressales.Main
             m_Image.sprite = m_AddressableSprite;
         }
 
-        private void SpawnPrefab()
+        async void SpawnPrefab()
         {
             if (m_Prefabs.Count == 0) return;
 
             int randIndex = Random.Range(0, m_Prefabs.Count);
-            var prefab = Instantiate(m_Prefabs[randIndex]);
-            Vector3 spawnPoint = new Vector3(Random.Range(-3, 3), Random.Range(-1, 3), 10);
-            prefab.transform.position = spawnPoint;
+            var spawnedPrefab = m_SpawnFactory.GetNewInstance(m_Prefabs[randIndex]);
+            await Task.Delay(m_SawnedObjectLifespan);
+
+            Destroy(spawnedPrefab);
         }
         #endregion
     }
