@@ -3,7 +3,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using System.Threading.Tasks;
-using TMPro;
+using System.Collections.Generic;
 
 namespace Addressales.Main
 {
@@ -21,15 +21,14 @@ namespace Addressales.Main
         [SerializeField] private Button m_AudioButton;
         [SerializeField] private Button m_VideoButton;
         [SerializeField] private Button m_SpriteButton;
-        [SerializeField] private string m_PrefabAddress;
-        [SerializeField] private string m_Prefab2Address;
+        [SerializeField] private string m_PrefabsLabel;
         [SerializeField] private string m_MaterialAddress;
         [SerializeField] private string m_JsonAddress;
         [SerializeField] private string m_AudioAddress;
         [SerializeField] private string m_VideoAddress;
         [SerializeField] private string m_SpriteAddress;
 
-        private GameObject m_Prefab;
+        private List<GameObject> m_Prefabs = new List<GameObject>();
         private AudioSource m_AudioSource;
         private AudioClip m_AddressableAudio;
         private Sprite m_AddressableSprite;
@@ -37,29 +36,20 @@ namespace Addressales.Main
         #region Lifecycle
         private void Awake()
         {
-            if (m_AudioButton != null)
+            m_AudioButton?.onClick.AddListener(delegate
             {
-                m_AudioButton.onClick.AddListener(delegate
-                {
-                    PlaySound();
-                });
-            }
+                PlaySound();
+            });
 
-            if (m_VideoButton != null)
+            m_VideoButton?.onClick.AddListener(delegate
             {
-                m_VideoButton.onClick.AddListener(delegate
-                {
-                    PlayVideo();
-                });
-            }
+                PlayVideo();
+            });
 
-            if (m_SpriteButton != null)
+            m_SpriteButton?.onClick.AddListener(delegate
             {
-                m_SpriteButton.onClick.AddListener(delegate
-                {
-                    ShowPicture();
-                });
-            }
+                ShowPicture();
+            });
         }
 
         void Start()
@@ -71,20 +61,9 @@ namespace Addressales.Main
 
         private void OnDestroy()
         {
-            if (m_AudioButton != null)
-            {
-                m_AudioButton.onClick.RemoveAllListeners();
-            }
-
-            if (m_VideoButton != null)
-            {
-                m_VideoButton.onClick.RemoveAllListeners();
-            }
-
-            if (m_SpriteButton != null)
-            {
-                m_SpriteButton.onClick.RemoveAllListeners();
-            }
+            m_AudioButton?.onClick.RemoveAllListeners();
+            m_VideoButton?.onClick.RemoveAllListeners();
+            m_SpriteButton?.onClick.RemoveAllListeners();
         }
         #endregion
 
@@ -101,13 +80,18 @@ namespace Addressales.Main
             m_AddressableSprite = await Addressables.LoadAssetAsync<Sprite>(m_SpriteAddress).Task;
 
             TextAsset json_string = await Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress).Task;
-            GameObject prefab = await Addressables.LoadAssetAsync<GameObject>(m_PrefabAddress).Task;
-            Material material = await Addressables.LoadAssetAsync<Material>(m_MaterialAddress).Task;
-
-            m_Prefab = Instantiate(prefab, transform);
-            m_Prefab.GetComponent<MeshRenderer>().material = material;
+            IList<GameObject> m_Prefabs = await Addressables.LoadAssetsAsync<GameObject>(m_PrefabsLabel, null).Task;
+            foreach (var obj in m_Prefabs)
+            {
+                Instantiate(obj, transform);
+            }
+            //Material material = await Addressables.LoadAssetAsync<Material>(m_MaterialAddress).Task;
+            //m_Prefab = Instantiate(prefab, transform);
+            //m_Prefab.GetComponent<MeshRenderer>().material = material;
             m_Text.text += JsonUtility.FromJson<JsonSerializedObject>(json_string.ToString()).json_text;
         }
+
+
         #endregion
 
         #region Delegates

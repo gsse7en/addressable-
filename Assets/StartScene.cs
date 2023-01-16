@@ -16,13 +16,10 @@ namespace Addressales.StartScene
         #region Lifecycle
         private void Awake()
         {
-            if (m_StartSceneButton != null)
+            m_StartSceneButton?.onClick.AddListener(delegate
             {
-                m_StartSceneButton.onClick.AddListener(delegate
-                {
-                    LoadSceneAsset();
-                });
-            }
+                LoadSceneAsset();
+            });
         }
 
         private void Update()
@@ -38,10 +35,7 @@ namespace Addressales.StartScene
 
         private void OnDestroy()
         {
-            if (m_StartSceneButton != null)
-            {
-                m_StartSceneButton.onClick.RemoveAllListeners();
-            }
+            m_StartSceneButton?.onClick.RemoveAllListeners();
         }
         #endregion
 

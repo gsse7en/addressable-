@@ -794,8 +794,8 @@ MonoBehaviour:
   m_AudioButton: {fileID: 1528028195}
   m_VideoButton: {fileID: 2144552487}
   m_SpriteButton: {fileID: 815939180}
-  m_PrefabAddress: Prefab
-  m_Prefab2Address: Prefab2
+  m_UnitsLabel: 
+  m_PrefabsLabel: unit
   m_MaterialAddress: Material
   m_JsonAddress: JsonData
   m_AudioAddress: Audio
