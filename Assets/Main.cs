@@ -3,6 +3,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using System.Threading.Tasks;
+using TMPro;
 
 namespace Addressales.Main
 {
@@ -17,6 +18,9 @@ namespace Addressales.Main
         [SerializeField] private Text m_Text;
         [SerializeField] private Image m_Image;
         [SerializeField] private VideoPlayer m_VideoPlayer;
+        [SerializeField] private Button m_AudioButton;
+        [SerializeField] private Button m_VideoButton;
+        [SerializeField] private Button m_SpriteButton;
         [SerializeField] private string m_PrefabAddress;
         [SerializeField] private string m_Prefab2Address;
         [SerializeField] private string m_MaterialAddress;
@@ -31,11 +35,56 @@ namespace Addressales.Main
         private Sprite m_AddressableSprite;
 
         #region Lifecycle
+        private void Awake()
+        {
+            if (m_AudioButton != null)
+            {
+                m_AudioButton.onClick.AddListener(delegate
+                {
+                    PlaySound();
+                });
+            }
+
+            if (m_VideoButton != null)
+            {
+                m_VideoButton.onClick.AddListener(delegate
+                {
+                    PlayVideo();
+                });
+            }
+
+            if (m_SpriteButton != null)
+            {
+                m_SpriteButton.onClick.AddListener(delegate
+                {
+                    ShowPicture();
+                });
+            }
+        }
+
         void Start()
         {
             m_AudioSource = GetComponent<AudioSource>();
 
             LoadAssets();
+        }
+
+        private void OnDestroy()
+        {
+            if (m_AudioButton != null)
+            {
+                m_AudioButton.onClick.RemoveAllListeners();
+            }
+
+            if (m_VideoButton != null)
+            {
+                m_VideoButton.onClick.RemoveAllListeners();
+            }
+
+            if (m_SpriteButton != null)
+            {
+                m_SpriteButton.onClick.RemoveAllListeners();
+            }
         }
         #endregion
 

@@ -492,7 +492,7 @@ GameObject:
   - component: {fileID: 815939181}
   - component: {fileID: 815939180}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: SpriteButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -561,19 +561,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 815939181}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1256065815}
-        m_TargetAssemblyTypeName: Main, Assembly-CSharp
-        m_MethodName: ShowPicture
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &815939181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -707,7 +695,7 @@ GameObject:
   - component: {fileID: 1017281902}
   - component: {fileID: 1017281901}
   m_Layer: 5
-  m_Name: AddresableImage
+  m_Name: AddresableSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -803,6 +791,9 @@ MonoBehaviour:
   m_Text: {fileID: 1810778139}
   m_Image: {fileID: 1017281901}
   m_VideoPlayer: {fileID: 1734930273}
+  m_AudioButton: {fileID: 1528028195}
+  m_VideoButton: {fileID: 2144552487}
+  m_SpriteButton: {fileID: 815939180}
   m_PrefabAddress: Prefab
   m_Prefab2Address: Prefab2
   m_MaterialAddress: Material
@@ -933,7 +924,7 @@ GameObject:
   - component: {fileID: 1528028196}
   - component: {fileID: 1528028195}
   m_Layer: 5
-  m_Name: Button
+  m_Name: AudioButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1002,19 +993,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1528028196}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1256065815}
-        m_TargetAssemblyTypeName: Main, Assembly-CSharp
-        m_MethodName: PlaySound
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1528028196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1134,7 +1113,7 @@ GameObject:
   - component: {fileID: 1810778138}
   - component: {fileID: 1810778139}
   m_Layer: 5
-  m_Name: Text
+  m_Name: JsonText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1293,7 +1272,7 @@ GameObject:
   - component: {fileID: 2144552488}
   - component: {fileID: 2144552487}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: VidioeButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1362,19 +1341,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2144552488}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1256065815}
-        m_TargetAssemblyTypeName: Main, Assembly-CSharp
-        m_MethodName: PlayVideo
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2144552488
 MonoBehaviour:
   m_ObjectHideFlags: 0

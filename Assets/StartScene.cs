@@ -14,6 +14,17 @@ namespace Addressales.StartScene
         private SceneInstance m_AddressableScene;
 
         #region Lifecycle
+        private void Awake()
+        {
+            if (m_StartSceneButton != null)
+            {
+                m_StartSceneButton.onClick.AddListener(delegate
+                {
+                    LoadSceneAsset();
+                });
+            }
+        }
+
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.X))
@@ -22,6 +33,14 @@ namespace Addressales.StartScene
                 m_PressXText.gameObject.SetActive(false);
 
                 UnloadScene();
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (m_StartSceneButton != null)
+            {
+                m_StartSceneButton.onClick.RemoveAllListeners();
             }
         }
         #endregion
