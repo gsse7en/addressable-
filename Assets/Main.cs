@@ -9,7 +9,7 @@ namespace Addressales.Main
 {
     public class PrefabsFactory : MonoBehaviour
     {
-        public GameObject GetNewInstance(GameObject prefab)
+        public GameObject GetPositionedPrefab(GameObject prefab)
         {
             GameObject gameOjectInstance = Instantiate(prefab);
             Vector3 position = new Vector3(Random.Range(-3, 3), Random.Range(-1, 3), 10);
@@ -109,7 +109,7 @@ namespace Addressales.Main
             if (m_Prefabs.Count == 0) return;
 
             int randIndex = Random.Range(0, m_Prefabs.Count);
-            var spawnedPrefab = m_SpawnFactory.GetNewInstance(m_Prefabs[randIndex]);
+            var spawnedPrefab = m_SpawnFactory.GetPositionedPrefab(m_Prefabs[randIndex]);
             await Task.Delay(m_SawnedObjectLifespan);
 
             Destroy(spawnedPrefab);
