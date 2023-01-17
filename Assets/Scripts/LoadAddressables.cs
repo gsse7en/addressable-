@@ -28,9 +28,13 @@ namespace Addressales.Load
         [SerializeField] private string m_VideoAddress;
         [SerializeField] private string m_SpriteAddress;
         [SerializeField] private int m_SawnedObjectLifespan = 2;
+        [SerializeField] private float m_xPosRange = 3;
+        [SerializeField] private float m_yPosRange = 2;
+        [SerializeField] private float m_zPos = 10;
         private IList<GameObject> m_Prefabs = new List<GameObject>();
         private AudioClip m_AddressableAudio;
         private Sprite m_AddressableSprite;
+        
 
         #region Lifecycle
         private void Awake()
@@ -40,21 +44,7 @@ namespace Addressales.Load
             m_SpawnRandomPrefab?.onClick.AddListener(delegate { ButtonSpawnPrefab(); });
         }
 
-        private void Start()
-        {
-            Load();
-        }
-
-        private void OnDestroy()
-        {
-            m_VideoButton?.onClick.RemoveAllListeners();
-            m_SpriteButton?.onClick.RemoveAllListeners();
-            m_SpawnRandomPrefab?.onClick.RemoveAllListeners();
-        }
-        #endregion
-
-        #region Async
-        async void  Load()
+        private async void Start()
         {
             try
             {
@@ -66,17 +56,26 @@ namespace Addressales.Load
             }
         }
 
-        async Task LoadAssetAsync()
+        private void OnDestroy()
+        {
+            m_VideoButton?.onClick.RemoveAllListeners();
+            m_SpriteButton?.onClick.RemoveAllListeners();
+            m_SpawnRandomPrefab?.onClick.RemoveAllListeners();
+        }
+        #endregion
+
+        #region Async
+        private async Task LoadAssetAsync()
         {
             var json_string = await Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress).Task;
             //m_Text.text += JsonUtility.FromJson<JsonSerializedObject>(json_string.ToString()).json_text;
             m_AddressableAudio = await Addressables.LoadAssetAsync<AudioClip>(m_AudioAddress).Task;
             m_VideoPlayer.clip = await Addressables.LoadAssetAsync<VideoClip>(m_VideoAddress).Task;
             m_AddressableSprite = await Addressables.LoadAssetAsync<Sprite>(m_SpriteAddress).Task;
-            m_Prefabs = await Addressables.LoadAssetsAsync<GameObject>(m_PrefabsLabel, SpawnPrefab).Task;
+            m_Prefabs = await Addressables.LoadAssetsAsync<GameObject>(m_PrefabsLabel, null).Task;
         }
 
-        async Task DelayAsync(int delay)
+        private async Task DelayAsync(int delay)
         {
             try
             {
@@ -87,22 +86,21 @@ namespace Addressales.Load
                 Debug.LogException(ex);
             }
         }
-        #endregion
 
-        #region Private
-        async void DestroyPrefab(GameObject prefab, int lifeSpan)
-        {
-            await DelayAsync(lifeSpan);
-            Destroy(prefab);
-        }
-
-        private void SpawnPrefab(GameObject prefab)
+        private async Task SpawnPrefab(GameObject prefab)
         {
             if (prefab == null) return;
-            var position = new Vector3(Random.Range(-3, 3), Random.Range(-1, 3), 10);
-            var prefabToDestroy = SpawnerManager.Spawn(prefab, position, m_AddressableAudio);
+            var position = new Vector3(Random.Range(-m_xPosRange, m_xPosRange), Random.Range(-m_yPosRange+1, m_yPosRange+1), m_zPos);
+            var prefabToDestroy = SpawnerManager.Spawn(prefab, m_AddressableAudio, position);
 
-            SpawnerManager.DestroyPrefab(prefabToDestroy, m_SawnedObjectLifespan).Start();
+            try
+            {
+                await SpawnerManager.DestroyPrefab(prefabToDestroy, m_SawnedObjectLifespan);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogException(ex);
+            }
         }
         #endregion
 
@@ -117,13 +115,20 @@ namespace Addressales.Load
             m_Image.sprite = m_AddressableSprite;
         }
 
-        private void ButtonSpawnPrefab()
+        private async void ButtonSpawnPrefab()
         {
             if (m_Prefabs.Count == 0) return;
 
             var randIndex = Random.Range(0, m_Prefabs.Count);
 
-            SpawnPrefab(m_Prefabs[randIndex]);
+            try
+            {
+                await SpawnPrefab(m_Prefabs[randIndex]);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogException(ex);
+            }
         }
         #endregion
     }

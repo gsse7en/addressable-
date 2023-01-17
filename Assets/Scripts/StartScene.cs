@@ -24,6 +24,7 @@ namespace Addressales.StartScene
 
         private void Update()
         {
+            //TODO: switch to button
             if (Input.GetKeyDown(KeyCode.X))
             {
                 m_StartSceneButton.gameObject.SetActive(true);
@@ -40,11 +41,13 @@ namespace Addressales.StartScene
         #endregion
 
         #region Async
-        public async void LoadSceneAsset()
+        private async void LoadSceneAsset()
         {
+            m_StartSceneButton.gameObject.SetActive(false);
+            m_PressXText.gameObject.SetActive(true);
             try
             {
-                await LoadAssetAsync();
+                m_AddressableScene = await Addressables.LoadSceneAsync(m_AddressableSceneAddress, UnityEngine.SceneManagement.LoadSceneMode.Additive).Task;
             }
             catch (System.Exception ex)
             {
@@ -52,7 +55,7 @@ namespace Addressales.StartScene
             }
         }
 
-        async void UnloadScene()
+        private async void UnloadScene()
         {
             try
             {
@@ -62,13 +65,6 @@ namespace Addressales.StartScene
             {
                 Debug.LogException(ex);
             }
-        }
-
-        async Task LoadAssetAsync()
-        {
-            m_StartSceneButton.gameObject.SetActive(false);
-            m_PressXText.gameObject.SetActive(true);
-            m_AddressableScene = await Addressables.LoadSceneAsync(m_AddressableSceneAddress, UnityEngine.SceneManagement.LoadSceneMode.Additive).Task;
         }
         #endregion
     }
