@@ -42,12 +42,26 @@ namespace Addressales.StartScene
         #region Async
         public async void LoadSceneAsset()
         {
-            await LoadAssetAsync();
+            try
+            {
+                await LoadAssetAsync();
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogException(ex);
+            }
         }
 
         async void UnloadScene()
         {
-            await Addressables.UnloadSceneAsync(m_AddressableScene, true).Task;
+            try
+            {
+                await Addressables.UnloadSceneAsync(m_AddressableScene, true).Task;
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogException(ex);
+            }
         }
 
         async Task LoadAssetAsync()

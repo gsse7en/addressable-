@@ -8,7 +8,7 @@ namespace Addressales.SpawnManager
     {
         public static GameObject Spawn(GameObject prefab, Vector3 position)
         {
-            GameObject gameOjectInstance = Instantiate(prefab);
+            var gameOjectInstance = Instantiate(prefab);
             gameOjectInstance.transform.position = position;
             return gameOjectInstance;
         }

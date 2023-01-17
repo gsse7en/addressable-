@@ -29,7 +29,7 @@ namespace Addressales.Main
         [SerializeField] private string m_AudioAddress;
         [SerializeField] private string m_VideoAddress;
         [SerializeField] private string m_SpriteAddress;
-        [SerializeField] private int m_SawnedObjectLifespan = 2000;
+        [SerializeField] private int m_SawnedObjectLifespan = 2;
         private IList<GameObject> m_Prefabs = new List<GameObject>();
         private AudioSource m_AudioSource;
         private AudioClip m_AddressableAudio;
@@ -44,11 +44,11 @@ namespace Addressales.Main
             m_SpawnRandomPrefab?.onClick.AddListener(delegate { ButtonSpawnPrefab(); });
         }
 
-        async Task Start()
+        private void Start()
         {
             m_AudioSource = GetComponent<AudioSource>();
 
-            await LoadAssetAsync();
+            LoadAddressables();
         }
 
         private void OnDestroy()
@@ -61,24 +61,49 @@ namespace Addressales.Main
         #endregion
 
         #region Async
+        async void  LoadAddressables()
+        {
+            try
+            {
+                await LoadAssetAsync();
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogException(ex);
+            }
+        }
+
         async Task LoadAssetAsync()
         {
+            var json_string = await Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress).Task;
+            m_Text.text += JsonUtility.FromJson<JsonSerializedObject>(json_string.ToString()).json_text;
             m_AddressableAudio = await Addressables.LoadAssetAsync<AudioClip>(m_AudioAddress).Task;
             m_VideoPlayer.clip = await Addressables.LoadAssetAsync<VideoClip>(m_VideoAddress).Task;
             m_AddressableSprite = await Addressables.LoadAssetAsync<Sprite>(m_SpriteAddress).Task;
-            TextAsset json_string = await Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress).Task;
-            m_Text.text += JsonUtility.FromJson<JsonSerializedObject>(json_string.ToString()).json_text;
             m_Prefabs = await Addressables.LoadAssetsAsync<GameObject>(m_PrefabsLabel, SpawnPrefab).Task;
         }
 
+        async Task DelayAsync(int delay)
+        {
+            try
+            {
+                await Task.Delay(delay);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogException(ex);
+            }
+        }
+        #endregion
+
+        #region Private
         async void DestroyPrefab(GameObject prefab, int lifeSpan)
         {
-            await Task.Delay(lifeSpan);
-
+            await DelayAsync(lifeSpan);
             Destroy(prefab);
         }
 
-        void SpawnPrefab(GameObject prefab)
+        private void SpawnPrefab(GameObject prefab)
         {
             var position = new Vector3(Random.Range(-3, 3), Random.Range(-1, 3), 10);
             var prefabToDestroy = Spawner.Spawn(prefab, position);
@@ -107,7 +132,7 @@ namespace Addressales.Main
         {
             if (m_Prefabs.Count == 0) return;
 
-            int randIndex = Random.Range(0, m_Prefabs.Count);
+            var randIndex = Random.Range(0, m_Prefabs.Count);
 
             SpawnPrefab(m_Prefabs[randIndex]);
         }
