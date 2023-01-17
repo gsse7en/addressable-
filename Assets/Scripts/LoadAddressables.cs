@@ -44,9 +44,9 @@ namespace Addressales.Load
             m_SpawnRandomPrefab?.onClick.AddListener(delegate { ButtonSpawnPrefab(); });
         }
 
-        private void Start()
+        private async void Start()
         {
-            LoadAssetAsync();
+            await LoadAssetAsync();
         }
 
         private void OnDestroy()
@@ -58,12 +58,16 @@ namespace Addressales.Load
         #endregion
 
         #region Async
-        private async void LoadAssetAsync()
+        private async Task LoadAssetAsync()
         {
             m_AddressableAudio = await Addressables.LoadAssetAsync<AudioClip>(m_AudioAddress).Task;
             m_VideoPlayer.clip = await Addressables.LoadAssetAsync<VideoClip>(m_VideoAddress).Task;
             m_AddressableSprite = await Addressables.LoadAssetAsync<Sprite>(m_SpriteAddress).Task;
+            await LoadPrefab();
+        }
 
+        private async Task LoadPrefab()
+        {
             var json_string = await Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress).Task;
             var labelsList = JsonUtility.FromJson<JsonSerializedObject>(json_string.ToString());
             m_labelsList.AddRange(labelsList.labels);
