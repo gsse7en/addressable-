@@ -7,7 +7,7 @@ namespace Addressales.Spawner
 {
     public class SpawnerManager : MonoBehaviour
     {
-        public static GameObject Spawn(GameObject prefab, AudioClip playSound, Vector3 position)
+        public GameObject Spawn(GameObject prefab, AudioClip playSound, Vector3 position)
         {
             var gameOjectInstance = Instantiate(prefab);
             gameOjectInstance.transform.position = position;
@@ -15,14 +15,14 @@ namespace Addressales.Spawner
             return gameOjectInstance;
         }
 
-        private static void PlaySound(GameObject prefab, AudioClip clip)
+        private void PlaySound(GameObject prefab, AudioClip clip)
         {
             var objectSoundSource = prefab.GetComponent<AudioSource>();
             objectSoundSource.clip = clip;
             objectSoundSource.Play();
         }
 
-        public static async Task DestroyPrefab(GameObject prefab, int waitTime)
+        public async Task DestroyPrefab(GameObject prefab, int waitTime)
         {
             await Task.Delay(waitTime);
             Destroy(prefab);

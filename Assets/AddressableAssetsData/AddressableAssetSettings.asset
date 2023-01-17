@@ -101,6 +101,8 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
+    - unit_red
+    - unit_gray
     - unit
   m_SchemaTemplates: []
   m_GroupTemplateObjects:

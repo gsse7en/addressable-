@@ -11,17 +11,17 @@ namespace Addressales.Load
     [System.Serializable]
     public class JsonSerializedObject
     {
-        public string json_text;
+        public string[] labels;
     }
 
     class LoadAddressables : MonoBehaviour
     {
+        [SerializeField] private SpawnerManager m_spawnerManager;
         [SerializeField] private Image m_Image;
         [SerializeField] private VideoPlayer m_VideoPlayer;
         [SerializeField] private Button m_VideoButton;
         [SerializeField] private Button m_SpriteButton;
         [SerializeField] private Button m_SpawnRandomPrefab;
-        [SerializeField] private string m_PrefabsLabel;
         [SerializeField] private string m_MaterialAddress;
         [SerializeField] private string m_JsonAddress;
         [SerializeField] private string m_AudioAddress;
@@ -34,7 +34,7 @@ namespace Addressales.Load
         private IList<GameObject> m_Prefabs = new List<GameObject>();
         private AudioClip m_AddressableAudio;
         private Sprite m_AddressableSprite;
-        
+        private List<string> m_labelsList = new List<string>();
 
         #region Lifecycle
         private void Awake()
@@ -44,16 +44,9 @@ namespace Addressales.Load
             m_SpawnRandomPrefab?.onClick.AddListener(delegate { ButtonSpawnPrefab(); });
         }
 
-        private async void Start()
+        private void Start()
         {
-            try
-            {
-                await LoadAssetAsync();
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogException(ex);
-            }
+            LoadAssetAsync();
         }
 
         private void OnDestroy()
@@ -65,14 +58,16 @@ namespace Addressales.Load
         #endregion
 
         #region Async
-        private async Task LoadAssetAsync()
+        private async void LoadAssetAsync()
         {
-            var json_string = await Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress).Task;
-            //m_Text.text += JsonUtility.FromJson<JsonSerializedObject>(json_string.ToString()).json_text;
             m_AddressableAudio = await Addressables.LoadAssetAsync<AudioClip>(m_AudioAddress).Task;
             m_VideoPlayer.clip = await Addressables.LoadAssetAsync<VideoClip>(m_VideoAddress).Task;
             m_AddressableSprite = await Addressables.LoadAssetAsync<Sprite>(m_SpriteAddress).Task;
-            m_Prefabs = await Addressables.LoadAssetsAsync<GameObject>(m_PrefabsLabel, null).Task;
+
+            var json_string = await Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress).Task;
+            var labelsList = JsonUtility.FromJson<JsonSerializedObject>(json_string.ToString());
+            m_labelsList.AddRange(labelsList.labels);
+            m_Prefabs = await Addressables.LoadAssetsAsync<GameObject>(m_labelsList, null, Addressables.MergeMode.Union, false).Task;
         }
 
         private async Task DelayAsync(int delay)
@@ -91,11 +86,11 @@ namespace Addressales.Load
         {
             if (prefab == null) return;
             var position = new Vector3(Random.Range(-m_xPosRange, m_xPosRange), Random.Range(-m_yPosRange+1, m_yPosRange+1), m_zPos);
-            var prefabToDestroy = SpawnerManager.Spawn(prefab, m_AddressableAudio, position);
+            var prefabToDestroy = m_spawnerManager.Spawn(prefab, m_AddressableAudio, position);
 
             try
             {
-                await SpawnerManager.DestroyPrefab(prefabToDestroy, m_SawnedObjectLifespan);
+                await m_spawnerManager.DestroyPrefab(prefabToDestroy, m_SawnedObjectLifespan);
             }
             catch (System.Exception ex)
             {

@@ -10,7 +10,7 @@ namespace Addressales.StartScene
     {
         public string m_AddressableSceneAddress;
         public Button m_StartSceneButton;
-        public GameObject m_PressXText;
+        public Button m_PressXText;
         private SceneInstance m_AddressableScene;
 
         #region Lifecycle
@@ -20,23 +20,20 @@ namespace Addressales.StartScene
             {
                 LoadSceneAsset();
             });
-        }
 
-        private void Update()
-        {
-            //TODO: switch to button
-            if (Input.GetKeyDown(KeyCode.X))
+            m_PressXText?.onClick.AddListener(delegate
             {
                 m_StartSceneButton.gameObject.SetActive(true);
                 m_PressXText.gameObject.SetActive(false);
 
                 UnloadScene();
-            }
+            });
         }
 
         private void OnDestroy()
         {
             m_StartSceneButton?.onClick.RemoveAllListeners();
+            m_PressXText?.onClick.RemoveAllListeners();
         }
         #endregion
 

@@ -21,6 +21,7 @@ MonoBehaviour:
     m_Address: Prefab
     m_ReadOnly: 0
     m_SerializedLabels:
+    - unit_red
     - unit
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 615b090dda6b64451a71d9f021510f43
@@ -28,24 +29,28 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - unit
+    - unit_red
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d3bb97ae509ae4418b801a4ee9e9057d
     m_Address: Prefab3
     m_ReadOnly: 0
     m_SerializedLabels:
     - unit
+    - unit_red
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ccc60fa21ad864776a2995d80c22110a
     m_Address: Prefab4
     m_ReadOnly: 0
     m_SerializedLabels:
     - unit
+    - unit_gray
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0e99c4081f58f4f7f8791bcaea47d66f
     m_Address: Prefab5
     m_ReadOnly: 0
     m_SerializedLabels:
     - unit
+    - unit_gray
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: ff2645da34ca34850b2d4620f06d895e, type: 2}
