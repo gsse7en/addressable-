@@ -66,9 +66,9 @@ namespace Addressales.StartScene
 
         async Task LoadAssetAsync()
         {
-            m_AddressableScene = await Addressables.LoadSceneAsync(m_AddressableSceneAddress, UnityEngine.SceneManagement.LoadSceneMode.Additive).Task;
             m_StartSceneButton.gameObject.SetActive(false);
             m_PressXText.gameObject.SetActive(true);
+            m_AddressableScene = await Addressables.LoadSceneAsync(m_AddressableSceneAddress, UnityEngine.SceneManagement.LoadSceneMode.Additive).Task;
         }
         #endregion
     }
