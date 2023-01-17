@@ -104,6 +104,9 @@ MonoBehaviour:
     - unit_red
     - unit_gray
     - unit
+    - unit_square
+    - unit_round
+    - unit_cylinder
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: dcc67c1932aab4928ad859ae011d1779, type: 2}
