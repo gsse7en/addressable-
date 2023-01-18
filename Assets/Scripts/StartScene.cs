@@ -4,7 +4,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.UI;
 
-namespace Addressales.StartScene
+namespace AddressablesSample.StartScene
 {
     public class StartScene : MonoBehaviour
     {
@@ -16,16 +16,16 @@ namespace Addressales.StartScene
         #region Lifecycle
         private void Awake()
         {
-            m_StartSceneButton?.onClick.AddListener(delegate
+            m_StartSceneButton?.onClick.AddListener(async delegate
             {
-                LoadSceneDidClicked();
+                await LoadSceneDidClickedAsync();
             });
 
-            m_PressXText?.onClick.AddListener(delegate
+            m_PressXText?.onClick.AddListener(async delegate
             {
                 m_StartSceneButton.gameObject.SetActive(true);
                 m_PressXText.gameObject.SetActive(false);
-                UnloadSceneDidClicked();
+                await UnloadSceneDidClickedAsync();
             });
         }
 
@@ -37,7 +37,7 @@ namespace Addressales.StartScene
         #endregion
 
         #region Delegates
-        private async void LoadSceneDidClicked()
+        private async Task LoadSceneDidClickedAsync()
         {
             m_StartSceneButton.gameObject.SetActive(false);
             m_PressXText.gameObject.SetActive(true);
@@ -52,7 +52,7 @@ namespace Addressales.StartScene
             }
         }
 
-        private async void UnloadSceneDidClicked()
+        private async Task UnloadSceneDidClickedAsync()
         {
             try
             {

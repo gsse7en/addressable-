@@ -994,7 +994,7 @@ MonoBehaviour:
   m_SpawnRandomPrefab: {fileID: 422750112}
   m_MaterialAddress: Material
   m_JsonAddress: JsonData
-  m_AudioAddress: Audio
+  m_AudioAddress: click
   m_VideoAddress: Video
   m_SpriteAddress: Sprite
   m_SawnedObjectLifespan: 3000

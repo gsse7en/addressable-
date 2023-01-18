@@ -4,9 +4,9 @@ using UnityEngine.UI;
 using UnityEngine.Video;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Addressales.Spawner;
+using AddressablesSample.Spawner;
 
-namespace Addressales.Load
+namespace AddressablesSample.Load
 {
     [System.Serializable]
     public class JsonSerializedObject
@@ -37,11 +37,11 @@ namespace Addressales.Load
         private List<string> m_LabelsList = new List<string>();
 
         #region Lifecycle
-        private async void Awake()
+        private async Task Awake()
         {
             m_VideoButton?.onClick.AddListener(delegate { PlayVideoDidClicked(); });
             m_SpriteButton?.onClick.AddListener(delegate { ShowPictureDidClicked(); });
-            m_SpawnRandomPrefab?.onClick.AddListener(delegate { SpawnPrefabDidClicked(); });
+            m_SpawnRandomPrefab?.onClick.AddListener(async delegate { await SpawnPrefabDidClickedAsync(); });
             await LoadAssetsAsync();
         }
 
@@ -60,38 +60,39 @@ namespace Addressales.Load
             m_VideoPlayer.clip = await Addressables.LoadAssetAsync<VideoClip>(m_VideoAddress).Task;
             m_AddressableSprite = await Addressables.LoadAssetAsync<Sprite>(m_SpriteAddress).Task;
             var json_string = await Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress).Task;
-            HandleJson(json_string.ToString());
+            var labelsList = JsonUtility.FromJson<JsonSerializedObject>(json_string.ToString());
+            m_LabelsList.AddRange(labelsList.labels);
             m_Prefabs = await Addressables.LoadAssetsAsync<GameObject>(m_LabelsList, AddAudioSource, Addressables.MergeMode.Union, false).Task;
         }
 
-        private async Task SpawnPrefab(GameObject prefab)
+        public async Task DestroyPrefabAsync(GameObject prefab, int waitTime)
         {
-            if (prefab == null) return;
-
-            var position = new Vector3(Random.Range(-m_xPosRange, m_xPosRange), Random.Range(-m_yPosRange+1, m_yPosRange+1), m_zPos);
-            var prefabToDestroy = m_spawnerManager.Spawn(prefab, m_AddressableAudio, position);
-
-            try
-            {
-                await m_spawnerManager.DestroyPrefab(prefabToDestroy, m_SawnedObjectLifespan);
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogException(ex);
-            }
+            await Task.Delay(waitTime);
+            DestroyImmediate(prefab);
         }
         #endregion
 
         #region Private
+        private GameObject SpawnPrefab(GameObject prefab)
+        {
+            if (prefab == null) return null;
+
+            var position = new Vector3(Random.Range(-m_xPosRange, m_xPosRange), Random.Range(-m_yPosRange + 1, m_yPosRange + 1), m_zPos);
+            var prefabToDestroy = m_spawnerManager.Spawn(prefab, position);
+            PlaySound(prefabToDestroy, m_AddressableAudio);
+            return prefabToDestroy;
+        }
+
+        private void PlaySound(GameObject prefab, AudioClip clip)
+        {
+            var objectSoundSource = prefab.GetComponent<AudioSource>();
+            objectSoundSource.clip = clip;
+            objectSoundSource.Play();
+        }
+
         private void AddAudioSource(GameObject prefab)
         {
             prefab.AddComponent<AudioSource>();
-        }
-
-        private void HandleJson(string json)
-        {
-            var labelsList = JsonUtility.FromJson<JsonSerializedObject>(json.ToString());
-            m_LabelsList.AddRange(labelsList.labels);
         }
         #endregion
 
@@ -106,15 +107,14 @@ namespace Addressales.Load
             m_Image.sprite = m_AddressableSprite;
         }
 
-        private async void SpawnPrefabDidClicked()
+        private async Task SpawnPrefabDidClickedAsync()
         {
             if (m_Prefabs.Count == 0) return;
 
             var randIndex = Random.Range(0, m_Prefabs.Count);
-
             try
             {
-                await SpawnPrefab(m_Prefabs[randIndex]);
+                await DestroyPrefabAsync(SpawnPrefab(m_Prefabs[randIndex]), m_SawnedObjectLifespan);
             }
             catch (System.Exception ex)
             {
