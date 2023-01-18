@@ -34,7 +34,7 @@ namespace Addressales.Load
         private IList<GameObject> m_Prefabs = new List<GameObject>();
         private AudioClip m_AddressableAudio;
         private Sprite m_AddressableSprite;
-        private List<string> m_labelsList = new List<string>();
+        private List<string> m_LabelsList = new List<string>();
 
         #region Lifecycle
         private async void Awake()
@@ -42,7 +42,7 @@ namespace Addressales.Load
             m_VideoButton?.onClick.AddListener(delegate { PlayVideoDidClicked(); });
             m_SpriteButton?.onClick.AddListener(delegate { ShowPictureDidClicked(); });
             m_SpawnRandomPrefab?.onClick.AddListener(delegate { SpawnPrefabDidClicked(); });
-            await LoadAssetAsync();
+            await LoadAssetsAsync();
         }
 
         private void OnDestroy()
@@ -53,28 +53,15 @@ namespace Addressales.Load
         }
         #endregion
 
-        #region Private
-        private void AddAudioSource(GameObject prefab)
-        {
-            prefab.AddComponent<AudioSource>();
-        }
-        #endregion
-
         #region Async
-        private async Task LoadAssetAsync()
+        private async Task LoadAssetsAsync()
         {
             m_AddressableAudio = await Addressables.LoadAssetAsync<AudioClip>(m_AudioAddress).Task;
             m_VideoPlayer.clip = await Addressables.LoadAssetAsync<VideoClip>(m_VideoAddress).Task;
             m_AddressableSprite = await Addressables.LoadAssetAsync<Sprite>(m_SpriteAddress).Task;
             var json_string = await Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress).Task;
             HandleJson(json_string.ToString());
-            m_Prefabs = await Addressables.LoadAssetsAsync<GameObject>(m_labelsList, AddAudioSource, Addressables.MergeMode.Union, false).Task;
-        }
-
-        private void HandleJson(string json)
-        {
-            var labelsList = JsonUtility.FromJson<JsonSerializedObject>(json.ToString());
-            m_labelsList.AddRange(labelsList.labels);
+            m_Prefabs = await Addressables.LoadAssetsAsync<GameObject>(m_LabelsList, AddAudioSource, Addressables.MergeMode.Union, false).Task;
         }
 
         private async Task SpawnPrefab(GameObject prefab)
@@ -92,6 +79,19 @@ namespace Addressales.Load
             {
                 Debug.LogException(ex);
             }
+        }
+        #endregion
+
+        #region Private
+        private void AddAudioSource(GameObject prefab)
+        {
+            prefab.AddComponent<AudioSource>();
+        }
+
+        private void HandleJson(string json)
+        {
+            var labelsList = JsonUtility.FromJson<JsonSerializedObject>(json.ToString());
+            m_LabelsList.AddRange(labelsList.labels);
         }
         #endregion
 

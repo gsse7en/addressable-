@@ -18,14 +18,14 @@ namespace Addressales.StartScene
         {
             m_StartSceneButton?.onClick.AddListener(delegate
             {
-                LoadSceneAsset();
+                LoadSceneDidClicked();
             });
 
             m_PressXText?.onClick.AddListener(delegate
             {
                 m_StartSceneButton.gameObject.SetActive(true);
                 m_PressXText.gameObject.SetActive(false);
-                UnloadScene();
+                UnloadSceneDidClicked();
             });
         }
 
@@ -36,8 +36,8 @@ namespace Addressales.StartScene
         }
         #endregion
 
-        #region Async
-        private async void LoadSceneAsset()
+        #region Delegates
+        private async void LoadSceneDidClicked()
         {
             m_StartSceneButton.gameObject.SetActive(false);
             m_PressXText.gameObject.SetActive(true);
@@ -52,7 +52,7 @@ namespace Addressales.StartScene
             }
         }
 
-        private async void UnloadScene()
+        private async void UnloadSceneDidClicked()
         {
             try
             {
