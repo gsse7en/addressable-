@@ -37,15 +37,11 @@ namespace Addressales.Load
         private List<string> m_labelsList = new List<string>();
 
         #region Lifecycle
-        private void Awake()
+        private async void Awake()
         {
             m_VideoButton?.onClick.AddListener(delegate { PlayVideoDidClicked(); });
             m_SpriteButton?.onClick.AddListener(delegate { ShowPictureDidClicked(); });
             m_SpawnRandomPrefab?.onClick.AddListener(delegate { SpawnPrefabDidClicked(); });
-        }
-
-        private async void Start()
-        {
             await LoadAssetAsync();
         }
 
@@ -84,6 +80,7 @@ namespace Addressales.Load
         private async Task SpawnPrefab(GameObject prefab)
         {
             if (prefab == null) return;
+
             var position = new Vector3(Random.Range(-m_xPosRange, m_xPosRange), Random.Range(-m_yPosRange+1, m_yPosRange+1), m_zPos);
             var prefabToDestroy = m_spawnerManager.Spawn(prefab, m_AddressableAudio, position);
 

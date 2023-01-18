@@ -25,7 +25,6 @@ namespace Addressales.StartScene
             {
                 m_StartSceneButton.gameObject.SetActive(true);
                 m_PressXText.gameObject.SetActive(false);
-
                 UnloadScene();
             });
         }
@@ -42,6 +41,7 @@ namespace Addressales.StartScene
         {
             m_StartSceneButton.gameObject.SetActive(false);
             m_PressXText.gameObject.SetActive(true);
+
             try
             {
                 m_AddressableScene = await Addressables.LoadSceneAsync(m_AddressableSceneAddress, UnityEngine.SceneManagement.LoadSceneMode.Additive).Task;

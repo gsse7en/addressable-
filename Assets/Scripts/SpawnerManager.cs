@@ -12,6 +12,7 @@ namespace Addressales.Spawner
             var gameOjectInstance = Instantiate(prefab);
             gameOjectInstance.transform.position = position;
             PlaySound(gameOjectInstance, playSound);
+
             return gameOjectInstance;
         }
 
