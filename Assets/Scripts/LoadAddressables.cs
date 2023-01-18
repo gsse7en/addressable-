@@ -39,9 +39,9 @@ namespace Addressales.Load
         #region Lifecycle
         private void Awake()
         {
-            m_VideoButton?.onClick.AddListener(delegate { PlayVideo(); });
-            m_SpriteButton?.onClick.AddListener(delegate { ShowPicture(); });
-            m_SpawnRandomPrefab?.onClick.AddListener(delegate { ButtonSpawnPrefab(); });
+            m_VideoButton?.onClick.AddListener(delegate { PlayVideoDidClicked(); });
+            m_SpriteButton?.onClick.AddListener(delegate { ShowPictureDidClicked(); });
+            m_SpawnRandomPrefab?.onClick.AddListener(delegate { SpawnPrefabDidClicked(); });
         }
 
         private async void Start()
@@ -57,33 +57,28 @@ namespace Addressales.Load
         }
         #endregion
 
+        #region Private
+        private void AddAudioSource(GameObject prefab)
+        {
+            prefab.AddComponent<AudioSource>();
+        }
+        #endregion
+
         #region Async
         private async Task LoadAssetAsync()
         {
             m_AddressableAudio = await Addressables.LoadAssetAsync<AudioClip>(m_AudioAddress).Task;
             m_VideoPlayer.clip = await Addressables.LoadAssetAsync<VideoClip>(m_VideoAddress).Task;
             m_AddressableSprite = await Addressables.LoadAssetAsync<Sprite>(m_SpriteAddress).Task;
-            await LoadPrefab();
-        }
-
-        private async Task LoadPrefab()
-        {
             var json_string = await Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress).Task;
-            var labelsList = JsonUtility.FromJson<JsonSerializedObject>(json_string.ToString());
-            m_labelsList.AddRange(labelsList.labels);
-            m_Prefabs = await Addressables.LoadAssetsAsync<GameObject>(m_labelsList, null, Addressables.MergeMode.Union, false).Task;
+            HandleJson(json_string.ToString());
+            m_Prefabs = await Addressables.LoadAssetsAsync<GameObject>(m_labelsList, AddAudioSource, Addressables.MergeMode.Union, false).Task;
         }
 
-        private async Task DelayAsync(int delay)
+        private void HandleJson(string json)
         {
-            try
-            {
-                await Task.Delay(delay);
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogException(ex);
-            }
+            var labelsList = JsonUtility.FromJson<JsonSerializedObject>(json.ToString());
+            m_labelsList.AddRange(labelsList.labels);
         }
 
         private async Task SpawnPrefab(GameObject prefab)
@@ -104,17 +99,17 @@ namespace Addressales.Load
         #endregion
 
         #region Delegates
-        private void PlayVideo()
+        private void PlayVideoDidClicked()
         {
             m_VideoPlayer.Play();
         }
 
-        private void ShowPicture()
+        private void ShowPictureDidClicked()
         {
             m_Image.sprite = m_AddressableSprite;
         }
 
-        private async void ButtonSpawnPrefab()
+        private async void SpawnPrefabDidClicked()
         {
             if (m_Prefabs.Count == 0) return;
 
