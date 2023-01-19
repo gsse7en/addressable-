@@ -948,7 +948,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Spawn Random Prefab
+  m_Text: Toggle Spawning
 --- !u!222 &1050749991
 CanvasRenderer:
   m_ObjectHideFlags: 0
