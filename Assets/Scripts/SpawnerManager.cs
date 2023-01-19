@@ -16,9 +16,14 @@ namespace AddressablesSample.Spawner
         private AudioClip m_clip;
 
         #region Lifecycle
-        private void Awake()
+        private void OnEnable()
         {
             StartSpawnerAync().GetAwaiter();
+        }
+
+        private void OnDisable()
+        {
+            StartDestroyObjectsAync().GetAwaiter();
         }
 
         private void OnDestroy()
@@ -43,10 +48,20 @@ namespace AddressablesSample.Spawner
         #region Async
         private async Task StartSpawnerAync()
         {
-            while (true)
+            while (gameObject.activeSelf)
             {
-                if (gameObject.activeSelf) CreateInstance();
-                else Destroy();
+                CreateInstance();
+
+                await Task.Delay(m_Delay);
+            }
+        }
+
+        private async Task StartDestroyObjectsAync()
+        {
+            while (m_SpawnedPrefabs.Count > 0 && !gameObject.activeSelf)
+            {
+                Destroy(m_SpawnedPrefabs[m_SpawnedPrefabs.Count - 1]);
+                m_SpawnedPrefabs.RemoveAt(m_SpawnedPrefabs.Count - 1);
 
                 await Task.Delay(m_Delay);
             }
@@ -56,24 +71,11 @@ namespace AddressablesSample.Spawner
         #region Private
         private void CreateInstance()
         {
-            if (m_Prefabs.Count > 0)
-            {
-                var gameOjectInstance = SpawnRandomPrefab();
-                PlaySound(gameOjectInstance);
-                m_SpawnedPrefabs.Add(gameOjectInstance);
-            }
-        }
+            if (m_Prefabs.Count == 0) return;
 
-        private void Destroy()
-        {
-            if (m_SpawnedPrefabs.Count > 0)
-            {
-                Destroy(m_SpawnedPrefabs[m_SpawnedPrefabs.Count - 1]);
-                m_SpawnedPrefabs.RemoveAt(m_SpawnedPrefabs.Count - 1);
-            } else
-            {
-                m_SpawnedPrefabs.Clear();
-            }
+            var gameOjectInstance = SpawnRandomPrefab();
+            PlaySound(gameOjectInstance);
+            m_SpawnedPrefabs.Add(gameOjectInstance);
         }
 
         private GameObject SpawnRandomPrefab()
