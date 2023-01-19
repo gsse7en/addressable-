@@ -45,7 +45,7 @@ namespace AddressablesSample.Spawner
         {
             while (true)
             {
-                if (gameObject.activeSelf) Spawn();
+                if (gameObject.activeSelf) CreateInstance();
                 else Destroy();
 
                 await Task.Delay(m_Delay);
@@ -54,11 +54,11 @@ namespace AddressablesSample.Spawner
         #endregion
 
         #region Private
-        private void Spawn()
+        private void CreateInstance()
         {
             if (m_Prefabs.Count > 0)
             {
-                var gameOjectInstance = CreateRandomInstance();
+                var gameOjectInstance = SpawnRandomPrefab();
                 PlaySound(gameOjectInstance);
                 m_SpawnedPrefabs.Add(gameOjectInstance);
             }
@@ -76,7 +76,7 @@ namespace AddressablesSample.Spawner
             }
         }
 
-        private GameObject CreateRandomInstance()
+        private GameObject SpawnRandomPrefab()
         {
             var randIndex = Random.Range(0, m_Prefabs.Count);
             var position = new Vector3(Random.Range(-m_xPosRange, m_xPosRange), Random.Range(-m_yPosRange + 1, m_yPosRange + 1), m_zPos);
