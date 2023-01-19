@@ -37,12 +37,12 @@ namespace AddressablesSample.Load
         private List<string> m_LabelsList = new List<string>();
 
         #region Lifecycle
-        private async Task Awake()
+        private void Awake()
         {
             m_VideoButton?.onClick.AddListener(delegate { PlayVideoDidClicked(); });
             m_SpriteButton?.onClick.AddListener(delegate { ShowPictureDidClicked(); });
-            m_SpawnRandomPrefab?.onClick.AddListener(async delegate { await SpawnPrefabDidClickedAsync(); });
-            await LoadAssetsAsync();
+            m_SpawnRandomPrefab?.onClick.AddListener(delegate { SpawnPrefabDidClickedAsync(); });
+            LoadAssetsAsync().GetAwaiter();
         }
 
         private void OnDestroy()
@@ -79,7 +79,6 @@ namespace AddressablesSample.Load
 
             var position = new Vector3(Random.Range(-m_xPosRange, m_xPosRange), Random.Range(-m_yPosRange + 1, m_yPosRange + 1), m_zPos);
             var prefabToDestroy = m_spawnerManager.Spawn(prefab, position);
-            PlaySound(prefabToDestroy, m_AddressableAudio);
             return prefabToDestroy;
         }
 
@@ -107,19 +106,14 @@ namespace AddressablesSample.Load
             m_Image.sprite = m_AddressableSprite;
         }
 
-        private async Task SpawnPrefabDidClickedAsync()
+        private void SpawnPrefabDidClickedAsync()
         {
             if (m_Prefabs.Count == 0) return;
 
             var randIndex = Random.Range(0, m_Prefabs.Count);
-            try
-            {
-                await DestroyPrefabAsync(SpawnPrefab(m_Prefabs[randIndex]), m_SawnedObjectLifespan);
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogException(ex);
-            }
+            var prefab = SpawnPrefab(m_Prefabs[randIndex]);
+            PlaySound(prefab, m_AddressableAudio);
+            DestroyPrefabAsync(prefab, m_SawnedObjectLifespan).GetAwaiter();
         }
         #endregion
     }

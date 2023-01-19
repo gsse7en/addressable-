@@ -16,16 +16,16 @@ namespace AddressablesSample.StartScene
         #region Lifecycle
         private void Awake()
         {
-            m_StartSceneButton?.onClick.AddListener(async delegate
+            m_StartSceneButton?.onClick.AddListener(delegate
             {
-                await LoadSceneDidClickedAsync();
+                LoadSceneDidClickedAsync().GetAwaiter();
             });
 
-            m_PressXText?.onClick.AddListener(async delegate
+            m_PressXText?.onClick.AddListener(delegate
             {
                 m_StartSceneButton.gameObject.SetActive(true);
                 m_PressXText.gameObject.SetActive(false);
-                await UnloadSceneDidClickedAsync();
+                UnloadSceneDidClickedAsync().GetAwaiter();
             });
         }
 
