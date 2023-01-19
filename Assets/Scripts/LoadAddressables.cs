@@ -21,16 +21,13 @@ namespace AddressablesSample.Load
         [SerializeField] private VideoPlayer m_VideoPlayer;
         [SerializeField] private Button m_VideoButton;
         [SerializeField] private Button m_SpriteButton;
-        [SerializeField] private Button m_SpawnRandomPrefab;
+        [SerializeField] private Button m_SpawnPrefabs;
         [SerializeField] private string m_MaterialAddress;
         [SerializeField] private string m_JsonAddress;
         [SerializeField] private string m_AudioAddress;
         [SerializeField] private string m_VideoAddress;
         [SerializeField] private string m_SpriteAddress;
-        [SerializeField] private int m_SawnedObjectLifespan = 2;
-        [SerializeField] private float m_xPosRange = 3;
-        [SerializeField] private float m_yPosRange = 2;
-        [SerializeField] private float m_zPos = 10;
+        
         private IList<GameObject> m_Prefabs = new List<GameObject>();
         private AudioClip m_AddressableAudio;
         private Sprite m_AddressableSprite;
@@ -41,7 +38,7 @@ namespace AddressablesSample.Load
         {
             m_VideoButton?.onClick.AddListener(delegate { PlayVideoDidClicked(); });
             m_SpriteButton?.onClick.AddListener(delegate { ShowPictureDidClicked(); });
-            m_SpawnRandomPrefab?.onClick.AddListener(delegate { SpawnPrefabDidClickedAsync(); });
+            m_SpawnPrefabs?.onClick.AddListener(delegate { SpawnPrefabsDidClicked(); });
             LoadAssetsAsync().GetAwaiter();
         }
 
@@ -49,7 +46,7 @@ namespace AddressablesSample.Load
         {
             m_VideoButton?.onClick.RemoveAllListeners();
             m_SpriteButton?.onClick.RemoveAllListeners();
-            m_SpawnRandomPrefab?.onClick.RemoveAllListeners();
+            m_SpawnPrefabs?.onClick.RemoveAllListeners();
         }
         #endregion
 
@@ -57,41 +54,21 @@ namespace AddressablesSample.Load
         private async Task LoadAssetsAsync()
         {
             m_AddressableAudio = await Addressables.LoadAssetAsync<AudioClip>(m_AudioAddress).Task;
+            m_spawnerManager.SetSpawnSound(m_AddressableAudio);
             m_VideoPlayer.clip = await Addressables.LoadAssetAsync<VideoClip>(m_VideoAddress).Task;
             m_AddressableSprite = await Addressables.LoadAssetAsync<Sprite>(m_SpriteAddress).Task;
             var json_string = await Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress).Task;
             var labelsList = JsonUtility.FromJson<JsonSerializedObject>(json_string.ToString());
             m_LabelsList.AddRange(labelsList.labels);
-            m_Prefabs = await Addressables.LoadAssetsAsync<GameObject>(m_LabelsList, AddAudioSource, Addressables.MergeMode.Union, false).Task;
-        }
-
-        public async Task DestroyPrefabAsync(GameObject prefab, int waitTime)
-        {
-            await Task.Delay(waitTime);
-            DestroyImmediate(prefab);
+            m_Prefabs = await Addressables.LoadAssetsAsync<GameObject>(m_LabelsList, AddToSpawnManager, Addressables.MergeMode.Union, false).Task;
         }
         #endregion
 
         #region Private
-        private GameObject SpawnPrefab(GameObject prefab)
-        {
-            if (prefab == null) return null;
-
-            var position = new Vector3(Random.Range(-m_xPosRange, m_xPosRange), Random.Range(-m_yPosRange + 1, m_yPosRange + 1), m_zPos);
-            var prefabToDestroy = m_spawnerManager.Spawn(prefab, position);
-            return prefabToDestroy;
-        }
-
-        private void PlaySound(GameObject prefab, AudioClip clip)
-        {
-            var objectSoundSource = prefab.GetComponent<AudioSource>();
-            objectSoundSource.clip = clip;
-            objectSoundSource.Play();
-        }
-
-        private void AddAudioSource(GameObject prefab)
+        private void AddToSpawnManager(GameObject prefab)
         {
             prefab.AddComponent<AudioSource>();
+            m_spawnerManager.AddPrefab(prefab);
         }
         #endregion
 
@@ -106,14 +83,9 @@ namespace AddressablesSample.Load
             m_Image.sprite = m_AddressableSprite;
         }
 
-        private void SpawnPrefabDidClickedAsync()
+        private void SpawnPrefabsDidClicked()
         {
-            if (m_Prefabs.Count == 0) return;
-
-            var randIndex = Random.Range(0, m_Prefabs.Count);
-            var prefab = SpawnPrefab(m_Prefabs[randIndex]);
-            PlaySound(prefab, m_AddressableAudio);
-            DestroyPrefabAsync(prefab, m_SawnedObjectLifespan).GetAwaiter();
+            m_spawnerManager.gameObject.SetActive(!m_spawnerManager.gameObject.activeSelf);
         }
         #endregion
     }

@@ -991,16 +991,12 @@ MonoBehaviour:
   m_VideoPlayer: {fileID: 1734930273}
   m_VideoButton: {fileID: 2144552487}
   m_SpriteButton: {fileID: 815939180}
-  m_SpawnRandomPrefab: {fileID: 422750112}
+  m_SpawnPrefabs: {fileID: 422750112}
   m_MaterialAddress: Material
   m_JsonAddress: JsonData
   m_AudioAddress: click
   m_VideoAddress: Video
   m_SpriteAddress: Sprite
-  m_SawnedObjectLifespan: 3000
-  m_xPosRange: 3
-  m_yPosRange: 2
-  m_zPos: 10
 --- !u!4 &1256065816
 Transform:
   m_ObjectHideFlags: 0
@@ -1113,6 +1109,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be4be1bc15f1446c2b035f6782424fc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Delay: 1000
+  m_xPosRange: 3
+  m_yPosRange: 2
+  m_zPos: 10
 --- !u!4 &1818313164
 Transform:
   m_ObjectHideFlags: 0
