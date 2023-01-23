@@ -2,98 +2,85 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace AddressablesSample.Spawner
 {
+    [System.Serializable]
+    public class JsonSerializedObject
+    {
+        public List<string> labels;
+    }
+
+    [System.Serializable]
+    public struct DelayData
+    {
+        [Range(0, 1000)]
+        public int From;
+        [Range(1000, 5000)]
+        public int To;
+    }
+
     public class SpawnerManager : MonoBehaviour
     {
-        [SerializeField] private int m_Delay = 1000;
+        [SerializeField] private string m_JsonAddress;
+        [SerializeField] private string m_AudioAddress;
+        [SerializeField] private DelayData m_Delay;
         [SerializeField] private float m_xPosRange = 3;
         [SerializeField] private float m_yPosRange = 2;
         [SerializeField] private float m_zPos = 10;
-        private List<GameObject> m_Prefabs = new List<GameObject>();
-        private List<GameObject> m_SpawnedPrefabs = new List<GameObject>();
-        private AudioClip m_clip;
+        private AudioClip m_AddressableAudio;
+        private List<GameObject> m_SpawnedObjects = new List<GameObject>();
 
         #region Lifecycle
         private void OnEnable()
         {
-            StartSpawnerAync().GetAwaiter();
+            if (m_SpawnedObjects.Count > 0)
+            {
+                DestroyAll();
+            }
+
+            LoadAssetsAsync();
         }
 
         private void OnDisable()
         {
-            StartDestroyObjectsAync().GetAwaiter();
-        }
-
-        private void OnDestroy()
-        {
-            foreach (GameObject prefab in m_SpawnedPrefabs) Destroy(prefab);
-            m_SpawnedPrefabs.Clear();
-        }
-        #endregion
-
-        #region Public
-        public void AddPrefab(GameObject prefab)
-        {
-            m_Prefabs.Add(prefab);
-        }
-
-        public void SetSpawnSound(AudioClip clip)
-        {
-            m_clip = clip;
+            DestroyAll();
         }
         #endregion
 
         #region Async
-        private async Task StartSpawnerAync()
+        private async Task LoadAssetsAsync()
         {
-            while (gameObject.activeSelf)
-            {
-                CreateInstance();
-
-                await Task.Delay(m_Delay);
-            }
-        }
-
-        private async Task StartDestroyObjectsAync()
-        {
-            while (m_SpawnedPrefabs.Count > 0 && !gameObject.activeSelf)
-            {
-                Destroy(m_SpawnedPrefabs[m_SpawnedPrefabs.Count - 1]);
-                m_SpawnedPrefabs.RemoveAt(m_SpawnedPrefabs.Count - 1);
-
-                await Task.Delay(m_Delay);
-            }
+            var json_string = await Addressables.LoadAssetAsync<TextAsset>(m_JsonAddress).Task;
+            var labelsList = JsonUtility.FromJson<JsonSerializedObject>(json_string.ToString());
+            await Addressables.LoadAssetsAsync<GameObject>(labelsList.labels, PrefabLoaded, Addressables.MergeMode.Union, false).Task;
         }
         #endregion
 
         #region Private
-        private void CreateInstance()
+        private void PrefabLoaded(GameObject prefab)
         {
-            if (m_Prefabs.Count == 0) return;
-
-            var gameOjectInstance = SpawnRandomPrefab();
-            PlaySound(gameOjectInstance);
-            m_SpawnedPrefabs.Add(gameOjectInstance);
+            CreatePrefabAsync(prefab);
         }
 
-        private GameObject SpawnRandomPrefab()
+        private async Task CreatePrefabAsync(GameObject prefab)
         {
-            var randIndex = Random.Range(0, m_Prefabs.Count);
+            await Task.Delay(Random.Range(m_Delay.From, m_Delay.To));
             var position = new Vector3(Random.Range(-m_xPosRange, m_xPosRange), Random.Range(-m_yPosRange + 1, m_yPosRange + 1), m_zPos);
-            var obj = Instantiate(m_Prefabs[randIndex]);
+            var obj = Instantiate(prefab);
             obj.transform.position = position;
-            return obj;
+            obj.AddComponent<AudioSource>();
+            m_AddressableAudio = await Addressables.LoadAssetAsync<AudioClip>(m_AudioAddress).Task;
+            obj.GetComponent<AudioSource>().PlayOneShot(m_AddressableAudio);
+            m_SpawnedObjects.Add(obj);
         }
 
-        private void PlaySound(GameObject prefab)
+        private void DestroyAll()
         {
-            if (m_clip == null) return;
-
-            var objectSoundSource = prefab.GetComponent<AudioSource>();
-            objectSoundSource.clip = m_clip;
-            objectSoundSource.Play();
+            foreach (GameObject prefab in m_SpawnedObjects) Destroy(prefab);
+            m_SpawnedObjects.Clear();
         }
         #endregion
     }

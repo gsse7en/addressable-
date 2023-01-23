@@ -17,16 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: a75c111e4936643d9987fe68ef9587e8
   m_SerializeEntries:
-  - m_GUID: 348724d384df64e8e9481bad3662880d
-    m_Address: AddressableScene
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: dad5111bce45843e3a8a9b4f25b57c9a
-    m_Address: Audio
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bb944228591d646b8b7762e8afbfaa34
     m_Address: JsonData
     m_ReadOnly: 0
@@ -34,16 +24,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c2ac9eca301154f53ad6dbbf39438e15
     m_Address: Material
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1c36f6d4d83944b51b4c38cac9a4d0eb
-    m_Address: Sprite
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: af9d729ff98124e6f8fbd81bff643d48
-    m_Address: Video
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
