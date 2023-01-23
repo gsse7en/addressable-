@@ -41,7 +41,7 @@ namespace AddressablesSample.Spawner
                 DestroyAll();
             }
 
-            LoadAssetsAsync();
+            LoadAssetsAsync().ConfigureAwait(false);
         }
 
         private void OnDisable()
@@ -62,7 +62,7 @@ namespace AddressablesSample.Spawner
         #region Private
         private void PrefabLoaded(GameObject prefab)
         {
-            CreatePrefabAsync(prefab);
+            CreatePrefabAsync(prefab).ConfigureAwait(false);
         }
 
         private async Task CreatePrefabAsync(GameObject prefab)
